@@ -46,6 +46,19 @@ func (ep *httpEndpoint) recordReport(r *http.Request) error {
 	return nil
 }
 
+func (ep *httpEndpoint) writeReport(w http.ResponseWriter) {
+	w.Write([]byte(fmt.Sprintf(`
+	<html>
+	<body>
+	Temperature: %s<br/>
+	Humidity: %s</br>
+	UV: %s</br>
+	Rain: %s</br>
+	</body>
+	</html>
+	`, ep.data["tempf"], ep.data["humidity"], ep.data["uv"], ep.data["eventrainin"])))
+}
+
 func (ep *httpEndpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/weather/report":
@@ -53,6 +66,8 @@ func (ep *httpEndpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ep.writeJson(w, "OK")
 	case "/weather/report/get":
 		ep.writeJson(w, ep.data)
+	case "/weather/report/main":
+		ep.writeReport(w)
 	default:
 		ep.Error(w, "Not found", 404)
 		return
