@@ -31,22 +31,27 @@ func (ep *httpEndpoint) writeJson(w http.ResponseWriter, data any) {
 	w.Write(result)
 }
 
-func (ep *httpEndpoint) recordReport(r *http.Request) error {
+func (ep *httpEndpoint) setWeather(w http.ResponseWriter, r *http.Request) {
 	rawData, err := io.ReadAll(r.Body)
 	if err != nil {
-		return fmt.Errorf("Error while reading request: %s", err.Error())
+		ep.Error(w, fmt.Sprintf("Error while reading request: %s", err.Error()), 500)
+		return
 	}
 	data, err := url.Parse("?" + string(rawData))
 	if err != nil {
-		return fmt.Errorf("Error while parsing request: %s", err.Error())
+		ep.Error(w, fmt.Sprintf("Error while parsing request: %s", err.Error()), 500)
 	}
 	for k, v := range data.Query() {
 		ep.data[k] = v[0]
 	}
-	return nil
+	w.Write([]byte("OK"))
 }
 
-func (ep *httpEndpoint) writeReport(w http.ResponseWriter) {
+func (ep *httpEndpoint) getWeather(w http.ResponseWriter, r *http.Request) {
+	ep.writeJson(w, ep.data)
+}
+
+func (ep *httpEndpoint) getRoot(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprintf(`
 	<html>
 	<body>
@@ -59,29 +64,19 @@ func (ep *httpEndpoint) writeReport(w http.ResponseWriter) {
 	`, ep.data["tempf"], ep.data["humidity"], ep.data["uv"], ep.data["eventrainin"])))
 }
 
-func (ep *httpEndpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/weather/report":
-		ep.recordReport(r)
-		ep.writeJson(w, "OK")
-	case "/weather/report/get":
-		ep.writeJson(w, ep.data)
-	case "/weather/report/main":
-		ep.writeReport(w)
-	default:
-		ep.Error(w, "Not found", 404)
-		return
-	}
-	fmt.Println("Beep")
-}
-
 func NewEndpoint(port int) (Endpoint, error) {
 	ep := &httpEndpoint{
 		data: map[string]string{},
 	}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/weather/data/set", ep.setWeather)
+	mux.HandleFunc("/weather/data/get", ep.getWeather)
+	mux.HandleFunc("/", ep.getRoot)
+
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%d", port),
-		Handler: ep,
+		Handler: mux,
 	}
 	if err := srv.ListenAndServe(); err != nil {
 		return nil, err
