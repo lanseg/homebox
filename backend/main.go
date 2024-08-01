@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Println("HELLO")
-
-	ep.NewEndpoint(1234)
+	fmt.Println("Starting data server")
+	ep.NewEndpoint(12345)
 }
