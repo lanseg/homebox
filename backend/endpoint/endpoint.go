@@ -62,19 +62,6 @@ func (ep *httpEndpoint) getWeather(w http.ResponseWriter, r *http.Request) {
 	ep.writeJson(w, ep.data)
 }
 
-func (ep *httpEndpoint) getRoot(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprintf(`
-	<html>
-	<body>
-	Temperature: %s<br/>
-	Humidity: %s</br>
-	UV: %s</br>
-	Rain: %s</br>
-	</body>
-	</html>
-	`, ep.data["tempf"], ep.data["humidity"], ep.data["uv"], ep.data["eventrainin"])))
-}
-
 func NewEndpoint(port int) (Endpoint, error) {
 	ep := &httpEndpoint{
 		data: map[string][]string{},
@@ -83,7 +70,6 @@ func NewEndpoint(port int) (Endpoint, error) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/weather/data/set", ep.setWeather)
 	mux.HandleFunc("/weather/data/get", ep.getWeather)
-	mux.HandleFunc("/", ep.getRoot)
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%d", port),
