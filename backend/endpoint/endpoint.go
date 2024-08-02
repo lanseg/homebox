@@ -8,6 +8,10 @@ import (
 	"net/url"
 )
 
+const (
+	historySize = 10
+)
+
 type Endpoint interface {
 }
 
@@ -15,7 +19,7 @@ type httpEndpoint struct {
 	Endpoint
 	http.Handler
 
-	data map[string]string
+	data map[string][]string
 }
 
 func (ep *httpEndpoint) Error(w http.ResponseWriter, msg string, code int) {
@@ -42,7 +46,14 @@ func (ep *httpEndpoint) setWeather(w http.ResponseWriter, r *http.Request) {
 		ep.Error(w, fmt.Sprintf("Error while parsing request: %s", err.Error()), 500)
 	}
 	for k, v := range data.Query() {
-		ep.data[k] = v[0]
+		if _, ok := ep.data[k]; !ok {
+			ep.data[k] = []string{}
+		}
+		remaining := ep.data[k]
+		if len(remaining) >= historySize {
+			remaining = remaining[:historySize]
+		}
+		ep.data[k] = append(v, remaining...)
 	}
 	w.Write([]byte("OK"))
 }
@@ -66,7 +77,7 @@ func (ep *httpEndpoint) getRoot(w http.ResponseWriter, r *http.Request) {
 
 func NewEndpoint(port int) (Endpoint, error) {
 	ep := &httpEndpoint{
-		data: map[string]string{},
+		data: map[string][]string{},
 	}
 
 	mux := http.NewServeMux()
