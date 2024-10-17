@@ -1,2 +1,3 @@
-# homebox
-Collect and display information from home sensors and smart devices
+# Homebox
+
+My PS1, vim other configurations I use on my devices.
