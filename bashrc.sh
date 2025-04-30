@@ -16,7 +16,8 @@ color_my_prompt
 EDITOR=vim
 
 alias ls='ls --color=auto --group-directories-first'
-alias mjs='python -mjson.tool --no-ensure-ascii '
+alias pwgen='pwgen -cnys '
+alias note="printf '%(%Y-%m-%d %H:%M)T \t%s\t%s\n' -1 "
 
 if [[ -n "$PS1" ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]]; then
           tmux attach || tmux
