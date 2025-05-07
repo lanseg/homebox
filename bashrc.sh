@@ -14,7 +14,7 @@ function color_my_prompt {
 color_my_prompt
 
 EDITOR=vim
-
+alias ytdlp='yt-dlp --retries 3 --playlist-random --continue --write-description --write-info-json --write-subs --sub-langs all -o "%(upload_date)s  %(channel)s - %(fulltitle)s.%(ext)s" '
 alias ls='ls --color=auto --group-directories-first'
 alias pwgen='pwgen -cnys '
 alias note="printf '%(%Y-%m-%d %H:%M)T \t%s\t%s\n' -1 "
