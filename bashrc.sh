@@ -2,6 +2,7 @@ function mkcd() {
     mkdir -p $@
     cd $@
 }
+
 function color_my_prompt {
     local __user_and_host="\[\033[01;32m\]\u@\h"
     local __cur_location="\[\033[01;34m\]\w"
@@ -18,6 +19,8 @@ alias ytdlp='yt-dlp --no-overwrite -v --retries 3 --playlist-random --continue -
 alias ls='ls --color=auto --group-directories-first'
 alias pwgen='pwgen -cnys '
 alias note="printf '%(%Y-%m-%d %H:%M)T \t%s\t%s\n' -1 "
+alias gl='git log --pretty="format:%C(blue)[%ad] %C(green)(%ar) %C(yellow)%h %C(reset)%s %C(dim white)- %an%C(reset)" --date="format:%Y-%m-%d %H:%M" '
+alias shredr='shred -n 10 -z -u -v '
 
 if [[ -n "$PS1" ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]]; then
           tmux attach || tmux
