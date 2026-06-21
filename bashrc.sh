@@ -14,7 +14,7 @@ function color_my_prompt {
 }
 color_my_prompt
 
-EDIT5OR=vim
+EDITOR=vim
 alias ytdlp='yt-dlp --no-overwrite -v --retries 3 --playlist-random --continue --write-description --write-info-json --write-subs --sub-langs all --output "%(upload_date)s %(channel)s - %(fulltitle)s.%(ext)s" '
 alias ls='ls --color=auto --group-directories-first'
 alias pwgen='pwgen -cnys '
