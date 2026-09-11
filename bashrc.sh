@@ -22,6 +22,7 @@ alias note="printf '%(%Y-%m-%d %H:%M)T \t%s\t%s\n' -1 "
 alias gl='git log --pretty="format:%C(blue)[%ad] %C(green)(%ar) %C(yellow)%h %C(reset)%s %C(dim white)- %an%C(reset)" --date="format:%Y-%m-%d %H:%M" '
 alias shredr='shred -n 10 -z -u -v '
 alias docker-stop-all='docker stop $(docker ps -q)'
+alias imsize2048='magick convert -quality 75 -resize 2048 '
 
 if [[ -n "$PS1" ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]]; then
           tmux attach || tmux
